@@ -39,11 +39,11 @@ const cantidadIdeologias = ideologiaCandidatos.length;
 const propuestas = {
     propuestasEconomicas: {
         intenciones: [
-            "Vamos a ",
-            "Queremos ",
-            "Planeamos ",
-            "Pensamos ",
-            "Buscamos ",
+            "vamos a ",
+            "queremos ",
+            "planeamos ",
+            "pensamos ",
+            "buscamos ",
         ],
         acciones: [
             "aumentar ",
@@ -57,7 +57,7 @@ const propuestas = {
             "bonos ",
             "subsidios ",
             "planes sociales ",
-            "aportes",
+            "aportes ",
         ],
         destinatarios: [
             "para los sectores marginados ",
@@ -65,8 +65,8 @@ const propuestas = {
             "para los trabajadores ",
             "para los autónomos ",
             "para los emprendedores ",
-            "para los sindicalistas",
-            "para los monotributistas",
+            "para los sindicalistas ",
+            "para los monotributistas ",
         ],
         conectores: [
             "para ",
@@ -134,12 +134,12 @@ const propuestas = {
     },
 
     propuestasSociales: {
-        intenciones: [
-            "Vamos a ",
-            "Queremos ",
-            "Planeamos ",
-            "Pensamos ",
-            "Buscamos ",
+      intenciones: [
+            "Y también vamos a ",
+            "También queremos ",
+            "Y planeamos ",
+            "Para finalizar pensamos ",
+            "Y en lo social buscamos ",
         ],
         acciones: [
             "construir ",
@@ -455,7 +455,8 @@ function mostrarCandidato(_num) {
     }
 
     let candidato = candidatos[_num - 1];
-    return console.log(candidato);
+    let presentacion = `Soy ${candidato.nombre} ${candidato.apellido}, el candidato representante del partido ${candidato.ideologia}. Nosotros ${candidato.propuestas}`;
+    return console.log(presentacion);
 }
 
 function votar() {
@@ -505,13 +506,13 @@ function votar() {
     // Desempatar:
     let numDesempatantes = desempatantes.length;
     if (numDesempatantes >= 2) {
-        let anuncioEmpate = ["Hubo un empate. Vamos a desempatar entre:\n"
+        let anuncioEmpate = ["Hubo un empate. Vamos a desempatar entre:\n"];
 
         desempatantes.forEach((desempatante) => {
             desempatante.participoEnDesempate = true;
             desempatante.ganoEnDesempate = false;
             anuncioEmpate.push(
-                "-" + desempatante.nombre + " " + desempatante.apellido + "\n"
+                "- " + desempatante.nombre + " " + desempatante.apellido + "\n"
             );
         });
         
@@ -536,4 +537,9 @@ function votar() {
 /* Ejecutar:
 generarCandidatos(n);
 generarVotantes(m);
-votar(); */ 
+votar(); 
+
+mostrarCandidato(>= 1 && <= n)
+mostarVotante(>= 1 && <= n)
+
+También se pueden usar inventarDNI() y inventarSusProp() de manera aislada */ 
