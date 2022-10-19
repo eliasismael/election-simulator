@@ -358,7 +358,7 @@ function generarVotantes(_cantidadVotantes) {
         return console.error("Se necesita al menos un votante");
     }
     if (_cantidadVotantes > MAX_DNI_POSIBLES) {
-        return console.error("Máximo 89.999.999 votantes");
+        return console.error("Máximo 89.999.999 de votantes");
     }
 
     // Asignar votantes
@@ -396,7 +396,7 @@ function generarCandidatos(_cantidadCandidatos) {
         return console.error("Se necesitan al menos 2 candidatos");
     }
     if (_cantidadCandidatos > cantidadIdeologias) {
-        return console.error("No hay tantas ideologias por las que votar");
+        return console.error("No hay tantas ideologías por las que votar");
     }
 
     // Generar candidatos con ideologías aleatóreas
@@ -438,7 +438,7 @@ function mostrarVotante(_id) {
         return console.error("Dame un número de votante");
     }
     if (_id <= 0 || _id > votantes.length) {
-        return console.error("No existe ese numero de votante");
+        return console.error("No existe ese número de votante");
     }
 
     const votante = votantes[_id - 1];
@@ -451,7 +451,7 @@ function mostrarCandidato(_num) {
         return console.error("Dame un número de candidato");
     }
     if (_num <= 0 || _num > candidatos.length) {
-        return console.error("No existe ese numero de candidato");
+        return console.error("No existe ese número de candidato");
     }
 
     let candidato = candidatos[_num - 1];
@@ -470,7 +470,7 @@ function votar() {
         return console.error("No hay votantes");
     }
     if (votantes.length < 0) {
-        return console.error("Se necesita al menos 1 votante para votar");
+        return console.error("Se necesita al menos un votante para votar");
     }
     if (candidatos.length < 2) {
         return console.error("Se necesitan al menos 2 candidatos para votar");
@@ -483,7 +483,7 @@ function votar() {
         votante.yaVoto = true;
     });
 
-    //Buscar ganador {
+    // Buscar ganador
     let ganador;
     let votosDelGanador = 0;
     candidatos.forEach((candidato) => {
@@ -540,6 +540,6 @@ generarVotantes(m);
 votar(); 
 
 mostrarCandidato(>= 1 && <= n)
-mostarVotante(>= 1 && <= n)
+mostarVotante(>= 1 && <= m)
 
 También se pueden usar inventarDNI() y inventarSusProp() de manera aislada */ 
