@@ -1,0 +1,57 @@
+body {
+    background-color: lightskyblue;
+}
+
+.main-cont {
+    width: 500px;
+    height: auto;
+
+    background-color: aliceblue;
+    border: lightseagreen solid 5px;
+    border-radius: 25px;
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -250px;
+    margin-left: -250px; 
+
+    text-align: center;
+} 
+
+form{
+    margin: 0 0 15px;
+}
+
+.formIndicativo {
+    margin: 20px;
+}
+
+input, button {
+    margin: 0px 5px 0;
+    border-radius: 10px;
+    box-shadow: 0px 0 2px rgb(30, 200, 230);
+}
+.pregunta{
+    color: lightseagreen;
+    /* text-shadow: 0px 0 2px lightskyblue; */
+}
+
+label {
+    display: block;
+    margin: 5px;
+    color: rgb(63, 63, 63);
+    /* text-shadow: 0px 0 2px lightsteelblue; */
+}
+
+h1 {
+    color: lightseagreen;
+    /* text-shadow: 0px 0 3px lightskyblue; */
+}
+
+#msg {
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    margin: 30px 90px 30px;
+}

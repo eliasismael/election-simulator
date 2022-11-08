@@ -1,47 +1,44 @@
-import {
-    inventarSustProp,
-    inventarDNI,
-    MAX_DNI_POSIBLES,
-    llamadasAInventarDNI,
-    dniCreados,
-} from "./funciones-internas.js";
 import { propuestas } from "./propuestas.js";
 
-const cantidadCandidatos = document.getElementById("cantidadCandidatos");
-const cantidadVotantes = document.getElementById("cantidadVotantes");
+// Botones para crear candidatos y votantes
+const cantCandidatos = document.getElementById("cantCandidatos");
+const cantVotantes = document.getElementById("cantVotantes");
 
+// Formularios para cada boton
 const formCandidatos = document.getElementById("formCandidatos");
 const formVotantes = document.getElementById("formVotantes");
 const formMostrarCand = document.getElementById("formMostrarCandidato");
 const formMostrarVot = document.getElementById("formMostrarVotante");
 
+// Textos para anunciar la creación de candidatos y votantes
 const anuncioCandGenerados = document.getElementById("anuncioCandGenerados");
 const anuncioVotGenerados = document.getElementById("anuncioVotGenerados");
 
 const btnVotar = document.getElementById("votar");
 const btnReset = document.getElementById("reset");
 
-const numeroCandidato = document.getElementById("numeroCandidato");
-const numeroVotante = document.getElementById("numeroVotante");
+// Valor de los input
+const numCandidato = document.getElementById("numCandidato");
+const numVotante = document.getElementById("numVotante");
 
-const mensajes = document.getElementById("mensajes");
+// Lo que devuelve el programa
+const msg = document.getElementById("msg");
+
+const botones = document.querySelectorAll(".boton");
 
 // Variables que se van a inicializar cuando se rellenen los inputs necesarios
-let _cantidadCandidatos;
-let _cantidadVotantes;
-let _numeroCandidato;
-let _numeroVotante;
+let _cantCandidatos, _cantVotantes, _numCandidato, _numVotante;
 
 formCandidatos.addEventListener("submit", (event) => {
     event.preventDefault();
-    _cantidadCandidatos = parseInt(cantidadCandidatos.value);
-    generarCandidatos(_cantidadCandidatos);
+    _cantCandidatos = parseInt(cantCandidatos.value);
+    generarCandidatos(_cantCandidatos);
 });
 
 formVotantes.addEventListener("submit", (event) => {
     event.preventDefault();
-    _cantidadVotantes = parseInt(cantidadVotantes.value);
-    generarVotantes(_cantidadVotantes);
+    _cantVotantes = parseInt(cantVotantes.value);
+    generarVotantes(_cantVotantes);
 });
 
 btnVotar.addEventListener("click", votar);
@@ -49,14 +46,14 @@ btnReset.addEventListener("click", reset);
 
 formMostrarCand.addEventListener("submit", (event) => {
     event.preventDefault();
-    _numeroCandidato = numeroCandidato.value;
-    mostrarCandidato(_numeroCandidato);
+    _numCandidato = numCandidato.value;
+    mostrarCandidato(_numCandidato);
 });
 
 formMostrarVot.addEventListener("submit", (event) => {
     event.preventDefault();
-    _numeroVotante = numeroVotante.value;
-    mostrarVotante(_numeroVotante);
+    _numVotante = numVotante.value;
+    mostrarVotante(_numVotante);
 });
 
 class Votante {
@@ -81,7 +78,7 @@ class Candidato {
 }
 
 //  Para asignar a cada candiato según se vayan creando
-const ideologiaCandidatos = [
+const ideologias = [
     "liberal",
     "socialista",
     "socialdemócrata",
@@ -90,19 +87,137 @@ const ideologiaCandidatos = [
     "fascista",
     "comunista",
     "libertario",
-    "marxista",
     "conservador",
     "progresista",
 ];
-const cantidadIdeologias = ideologiaCandidatos.length;
+const cantIdeologias = ideologias.length;
 
 let candidatos = [];
 let votantes = [];
 
 // Solo se podrán crear candidatos y votantes una vez
-let generarCandidatosUsada = false;
-let generarVotantesUsada = false;
+let candidatosCreados = false;
+let votantesCreados = false;
 let votarUsada = false;
+let votando = false;
+
+// Variables para manejar el código asíncrono en la función "votar"
+let contando, esperarGanador, mostrarEmpate, return1, return2;
+
+// Creamos dnis de 8 dígitos (desde 10 millones a 99.999.999)
+// Establecemos la cantidad máxima posible de distintos dni
+const MAX_DNI_POSIBLES = 89999999;
+let llamadasAInventarDNI = 0;
+let dniCreados = [];
+// Variable que va acontener los dni creados para que no se repitan
+
+function inventarDNI() {
+    if (llamadasAInventarDNI === MAX_DNI_POSIBLES) {
+        return "No se pueden crear más dni";
+    }
+
+    const DIGITOS_DNI = 8;
+    const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const cantNums = nums.length;
+    // Array para añadir números que luego se convierte en string
+    let dni = [];
+    // Número a añadir
+    let num;
+    // CREAR DNI ÚNICOS E IRREPETIBLES:
+    do {
+        // Reinicializar dni como array vacio por si la condición del while se cumplió, ya que durante el proceso deja de ser un array
+        dni = [];
+
+        // Obtener el primer número y establecer que este no sea 0
+        do {
+            num = Math.floor(Math.random() * cantNums);
+        } while (num === 0);
+        dni.push(num);
+
+        // Obtener los números restantes
+        for (let i = 1; i < DIGITOS_DNI; i++) {
+            num = Math.floor(Math.random() * cantNums);
+            dni.push(num);
+        }
+
+        // Añadir puntos
+        // Después del segundo número
+        dni.splice(2, 0, ".");
+        // Después del quinto número, teniendo en cuenta que ya añadimos el primer punto
+        dni.splice(6, 0, ".");
+
+        // Convertir a string
+        dni = dni.toString();
+        // Dividir cadena por las comas y luego unirlas sin caracter que los separe
+        dni = dni.split(",").join("");
+
+        // Repetir la creacion deL dni mientras ese dni ya haya sido creado:
+    } while (dniCreados.indexOf(dni) !== -1);
+    dniCreados.push(dni);
+    llamadasAInventarDNI++;
+    return dni;
+}
+
+function inventarSustProp() {
+    const MIN_NUMBER = 3;
+    const MAX_NUMBER = 7;
+    // Cantidad de caracteres que va a tener el sustantivo propio
+    const numLetras = Math.round(
+        Math.random() * (MAX_NUMBER - MIN_NUMBER) + MIN_NUMBER
+    );
+    const vocales = ["a", "e", "i", "o", "u"];
+    const consonantes = [
+        "b",
+        "c",
+        "d",
+        "f",
+        "g",
+        "h",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "p",
+        "r",
+        "s",
+        "t",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+    ];
+    const cantidadVocales = vocales.length;
+    const cantidadConsonantes = consonantes.length;
+    let sustProp = "";
+
+    for (let i = 0; i < numLetras; i++) {
+        const letra =
+            i % 2 === 0
+                ? consonantes[Math.floor(Math.random() * cantidadConsonantes)]
+                : vocales[Math.floor(Math.random() * cantidadVocales)];
+        sustProp += letra;
+    }
+
+    const primeraLetra = sustProp.slice(0, 1).toUpperCase();
+    const resto = sustProp.substring(1, numLetras);
+    sustProp = primeraLetra + resto;
+    return sustProp;
+}
+
+// Función para deshabilitar y habilitar botones mientras se cuentan los votos
+// Esto es para evitar conflictos con el código asíncrono
+function manejarBotones() {
+    if (votando)
+        for (const boton of botones) {
+            boton.setAttribute("disabled", "");
+        }
+    else
+        for (const boton of botones) {
+            boton.removeAttribute("disabled");
+        }
+}
 
 function generarPropuesta() {
     // Propuesta económica
@@ -168,32 +283,27 @@ function generarPropuesta() {
 
     let socFinal = socValues.toString().split(",").join("");
 
-    let propuestaFinal = ecoFinal + " " + polFinal + " " + socFinal;
+    let propuestaFinal = ecoFinal + "<br>" + polFinal + "<br>" + socFinal;
     return propuestaFinal;
 }
 
-function generarVotantes(_cantidadVotantes) {
-    if (generarVotantesUsada) {
-        mensajes.innerHTML = "Esta función ya se usó";
-        return console.error("Esta función ya se usó");
-    }
-    if (_cantidadVotantes === undefined || isNaN(parseInt(_cantidadVotantes))) {
-        mensajes.innerHTML = "Tenés que decirme cuantos votantes querés";
-        return console.error("Tenés que decirme cuantos votantes querés");
-    }
-    if (_cantidadVotantes <= 0) {
-        mensajes.innerHTML = "Se necesita al menos un votante";
-        return console.error("Se necesita al menos un votante");
-    }
-    if (_cantidadVotantes > MAX_DNI_POSIBLES) {
-        mensajes.innerHTML = "Máximo 89.999.999 de votantes";
-        return console.error("Máximo 89.999.999 de votantes");
-    }
+function generarVotantes(_cantVotantes) {
+    if (votantesCreados) return (msg.innerHTML = "Ya se crearon los votantes");
 
-    mensajes.innerHTML = "";
+    if (_cantVotantes === undefined || isNaN(parseInt(_cantVotantes)))
+        return (msg.innerHTML = "Tenés que decirme cuántos votantes querés");
+
+    if (_cantVotantes <= 0)
+        return (msg.innerHTML = "Se necesita al menos un votante");
+
+    if (_cantVotantes > MAX_DNI_POSIBLES)
+        return (msg.innerHTML = "Máximo 89.999.999 de votantes");
+
+    msg.innerHTML = "";
+
     // Asignar votantes
     let id = 1;
-    for (let i = 0; i < _cantidadVotantes; i++) {
+    for (let i = 0; i < _cantVotantes; i++) {
         let votante = new Votante(
             inventarSustProp(),
             inventarSustProp(),
@@ -206,35 +316,24 @@ function generarVotantes(_cantidadVotantes) {
         id++;
     }
 
-    generarVotantesUsada = true;
-
-    let anuncio = `¡${_cantidadVotantes} votantes generados con éxito!`;
-    anuncioVotGenerados.innerHTML = anuncio;
-    return console.log(anuncio);
+    votantesCreados = true;
+    anuncioVotGenerados.innerHTML = `¡${_cantVotantes} votantes generados con éxito!`;
 }
 
-function generarCandidatos(_cantidadCandidatos) {
-    if (generarCandidatosUsada) {
-        mensajes.innerHTML = "Esta función ya se usó";
-        return console.error("Esta función ya se usó");
-    }
-    if (
-        _cantidadCandidatos === undefined ||
-        isNaN(parseInt(_cantidadCandidatos))
-    ) {
-        mensajes.innerHTML = "Tenés que decirme cuantos candidatos querés";
-        return console.error("Tenés que decirme cuantos candidatos querés");
-    }
-    if (_cantidadCandidatos < 2) {
-        mensajes.innerHTML = "Se necesitan al menos 2 candidatos";
-        return console.error("Se necesitan al menos 2 candidatos");
-    }
-    if (_cantidadCandidatos > cantidadIdeologias) {
-        mensajes.innerHTML = "No hay tantas ideologías por las que votar";
-        return console.error("No hay tantas ideologías por las que votar");
-    }
+function generarCandidatos(_cantCandidatos) {
+    if (candidatosCreados)
+        return (msg.innerHTML = "Ya se crearon los candidatos");
 
-    mensajes.innerHTML = "";
+    if (_cantCandidatos === undefined || isNaN(parseInt(_cantCandidatos)))
+        return (msg.innerHTML = "Tenés que decirme cuántos candidatos querés");
+
+    if (_cantCandidatos < 2)
+        return (msg.innerHTML = "Se necesitan al menos 2 candidatos");
+
+    if (_cantCandidatos > cantIdeologias)
+        return (msg.innerHTML = "No hay tantas ideologías por las que votar");
+
+    msg.innerHTML = "";
 
     // Generar candidatos con ideologías aleatóreas
     let indiceRandom;
@@ -243,17 +342,16 @@ function generarCandidatos(_cantidadCandidatos) {
     let candidatoGenerado;
 
     // Buscamos una ideología para cada candidato sin que se repitan
-    for (let i = 0; i < _cantidadCandidatos; i++) {
+    for (let i = 0; i < _cantCandidatos; i++) {
         do {
-            indiceRandom = Math.floor(Math.random() * cantidadIdeologias);
+            indiceRandom = Math.floor(Math.random() * cantIdeologias);
         } while (numObtenidos.indexOf(indiceRandom) !== -1);
-        // Repetimos esto mientras ya se haya obtenido ese número en un ciclo anterior, así
-        // nos aseguramos de no asignar la misma ideología a dos candidatos distintos.
-
+        /* Repetimos esto mientras ya se haya obtenido ese número en un ciclo anterior, así
+           nos aseguramos de no asignar la misma ideología a dos candidatos distintos. */
         // Justamente para eso añadimos el número al array.
         numObtenidos.push(indiceRandom);
 
-        ideologiaRandom = ideologiaCandidatos[indiceRandom];
+        ideologiaRandom = ideologias[indiceRandom];
         candidatoGenerado = new Candidato(
             inventarSustProp(),
             inventarSustProp(),
@@ -264,80 +362,60 @@ function generarCandidatos(_cantidadCandidatos) {
         candidatos.push(candidatoGenerado);
     }
 
-    generarCandidatosUsada = true;
-
-    let anuncio = `¡${_cantidadCandidatos} candidatos generados con éxito!`;
-    anuncioCandGenerados.innerHTML = anuncio;
-    return console.log(anuncio);
+    candidatosCreados = true;
+    anuncioCandGenerados.innerHTML = `¡${_cantCandidatos} candidatos generados con éxito!`;
 }
 
 function mostrarVotante(_id) {
-    if (!generarVotantesUsada) {
-        mensajes.innerHTML = "No hay votantes";
-        return console.error("No hay votantes");
-    }
-    if (isNaN(parseInt(_id))) {
-        mensajes.innerHTML = "Dame un número de votante";
-        return console.error("Dame un número de votante");
-    }
-    if (_id <= 0 || _id > votantes.length) {
-        mensajes.innerHTML = "No existe ese número de votante";
-        return console.error("No existe ese número de votante");
-    }
+    if (!votantesCreados) return (msg.innerHTML = "No hay votantes");
+
+    if (isNaN(parseInt(_id)))
+        return (msg.innerHTML = "Dame un número de votante");
+
+    if (_id <= 0 || _id > votantes.length)
+        return (msg.innerHTML = "No existe ese número de votante");
 
     const votante = votantes[_id - 1];
-    const presentacion = `Soy ${votante.Nombre} ${votante.Apellido}, mi dni es ${votante.DNI} y soy de la ciudad de ${votante.Ciudad}.`;
-    mensajes.innerHTML = presentacion;
-    return console.log(presentacion);
+    msg.innerHTML = `Soy ${votante.Nombre} ${votante.Apellido}, mi dni es ${votante.DNI} y soy de la ciudad de ${votante.Ciudad}.`;
 }
 
 function mostrarCandidato(_num) {
-    if (!generarCandidatosUsada) {
-        mensajes.innerHTML = "No hay candidatos";
-        return console.error("No hay candidatos");
-    }
-    if (isNaN(parseInt(_num))) {
-        mensajes.innerHTML = "Dame un número de candidato";
-        return console.error("Dame un número de candidato");
-    }
-    if (_num <= 0 || _num > candidatos.length) {
-        mensajes.innerHTML = "No existe ese número de candidato";
-        return console.error("No existe ese número de candidato");
-    }
+    if (!candidatosCreados) return (msg.innerHTML = "No hay candidatos");
+
+    if (isNaN(parseInt(_num)))
+        return (msg.innerHTML = "Dame un número de candidato");
+
+    if (_num <= 0 || _num > candidatos.length)
+        return (msg.innerHTML = "No existe ese número de candidato");
 
     let candidato = candidatos[_num - 1];
-    let presentacion = `Soy ${candidato.nombre} ${candidato.apellido}, el candidato representante del partido ${candidato.ideologia}. <br> Nosotros ${candidato.propuestas}`;
-    mensajes.innerHTML = presentacion;
-    return console.log(presentacion);
+    msg.innerHTML = `Soy ${candidato.nombre} ${candidato.apellido}, el candidato representante del partido ${candidato.ideologia}. <br><br> Nosotros ${candidato.propuestas}`;
 }
 
-async function votar() {
-    if (votarUsada) {
-        mensajes.innerHTML = "Ya se votó. Inicia una nueva votación.";
-        return console.error("Ya se votó. Inicia una nueva votación.");
-    }
-    if (!generarCandidatosUsada && !generarVotantesUsada) {
-        mensajes.innerHTML = "No hay ni candidatos ni votantes";
-        return console.error("No hay ni candidatos ni votantes");
-    }
-    if (!generarCandidatosUsada) {
-        mensajes.innerHTML = "No hay candidatos";
-        return console.error("No hay candidatos");
-    }
-    if (!generarVotantesUsada) {
-        mensajes.innerHTML = "No hay votantes";
-        return console.error("No hay votantes");
-    }
-    if (votantes.length < 0) {
-        mensajes.innerHTML = "Se necesita al menos un votante para votar";
-        return console.error("Se necesita al menos un votante para votar");
-    }
-    if (candidatos.length < 2) {
-        mensajes.innerHTML = "Se necesitan al menos 2 candidatos para votar";
-        return console.error("Se necesitan al menos 2 candidatos para votar");
-    }
+function votar() {
+    if (votarUsada)
+        return (msg.innerHTML = "Ya se votó. Inicia una nueva votación.");
 
+    if (!candidatosCreados && !votantesCreados)
+        return (msg.innerHTML = "No hay ni candidatos ni votantes");
+
+    if (!candidatosCreados) return (msg.innerHTML = "No hay candidatos");
+
+    if (!votantesCreados) return (msg.innerHTML = "No hay votantes");
+
+    if (votantes.length < 0)
+        return (msg.innerHTML = "Se necesita al menos un votante para votar");
+
+    if (candidatos.length < 2)
+        return (msg.innerHTML =
+            "Se necesitan al menos 2 candidatos para votar");
+
+    votando = true;
+    manejarBotones();
     votarUsada = true;
+
+    contando = setTimeout(() => (msg.innerHTML = "Contando votos..."), 0);
+    msg.innerHTML = contando;
 
     // Hacer votar a los votantes
     votantes.forEach((votante) => {
@@ -357,7 +435,7 @@ async function votar() {
     });
 
     // Si hay desempatantes
-    let huboEmpate = false;
+    let empate = false;
     let desempatantes = [];
 
     candidatos.forEach((desempatante) => {
@@ -366,12 +444,10 @@ async function votar() {
         if (values[4] === votosDelGanador) desempatantes.push(desempatante);
     });
 
-    mensajes.innerHTML = "Contando votos...";
-
     // Desempatar:
     let numDesempatantes = desempatantes.length;
     if (numDesempatantes >= 2) {
-        let anuncioEmpate = ["Hubo un empate. Vamos a desempatar entre:"];
+        let anuncioEmpate = ["Hubo un empate. Vamos a desempatar entre: "];
 
         desempatantes.forEach((desempatante) => {
             desempatante.participoEnDesempate = true;
@@ -388,61 +464,64 @@ async function votar() {
 
         anuncioEmpate.toString().split(",").join("") + "Desempatando...";
 
-        const mostrarEmpate = async function () {
-            setTimeout(() => {
-                mensajes.innerHTML = anuncioEmpate;
-                console.log(anuncioEmpate);
-            }, 3000);
-        };
-        mostrarEmpate();
+        mostrarEmpate = setTimeout(() => (msg.innerHTML = anuncioEmpate), 3000);
+        msg.innerHTML = mostrarEmpate;
 
         let numGanador = Math.floor(Math.random() * numDesempatantes);
         ganador = desempatantes[numGanador];
         ganador.ganoEnDesempate = true;
-        huboEmpate = true;
+        empate = true;
     }
 
     // Si hubo empate que tarde más en aparecer el anuncio de espera del ganador
-    let time = huboEmpate ? 6000 : 3000;
-    const esperarGanador = async function () {
-        setTimeout(() => {
-            mensajes.innerHTML += "<br>" + "<br>" + "Y el ganador es...";
-        }, time);
-    };
-    esperarGanador();
+    let time = empate ? 6000 : 3000;
+
+    esperarGanador = setTimeout(
+        () => (msg.innerHTML += "<br>" + "Y el ganador es..."),
+        time
+    );
+    msg.innerHTML = esperarGanador;
 
     // Así mismo incrementar el tiempo del anuncio final en función de si se extendió el tiempo anterior o no
-    let time2 = huboEmpate ? 9000 : 6000;
+    let time2 = empate ? 9000 : 6000;
 
-    if (huboEmpate) {
-        return setTimeout(() => {
-            const anuncio = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido}`;
-            mensajes.innerHTML = anuncio;
-            console.log(anuncio);
+    if (empate) {
+        return1 = setTimeout(() => {
+            votando = false;
+            manejarBotones();
+            return (msg.innerHTML = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido}`);
         }, time2);
+        return (msg.innerHTML = return1);
     } else {
-        return setTimeout(() => {
-            const anuncio = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido} con ${ganador.votosAcumulados} votos`;
-            mensajes.innerHTML = anuncio;
-            console.log(anuncio);
+        return2 = setTimeout(() => {
+            votando = false;
+            manejarBotones();
+            return (msg.innerHTML = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido} con ${ganador.votosAcumulados} votos`);
         }, time2);
+        return (msg.innerHTML = return2);
     }
 }
 
 function reset() {
-    console.clear();
-    mensajes.innerHTML = "";
-    _cantidadCandidatos = undefined;
-    _cantidadVotantes = undefined;
-    generarCandidatosUsada = false;
-    generarVotantesUsada = false;
+    votando = false;
+    manejarBotones();
+    clearTimeout(contando);
+    clearTimeout(esperarGanador);
+    clearTimeout(mostrarEmpate);
+    clearTimeout(return1);
+    clearTimeout(return2);
+    msg.innerHTML = "";
+    _cantCandidatos = undefined;
+    _cantVotantes = undefined;
+    candidatosCreados = false;
+    votantesCreados = false;
     votarUsada = false;
     anuncioCandGenerados.innerHTML = "";
     anuncioVotGenerados.innerHTML = "";
     candidatos.length = 0;
     votantes.length = 0;
-    cantidadCandidatos.value = "";
-    cantidadVotantes.value = "";
-    numeroCandidato.value = "";
-    numeroVotante.value = "";
+    cantCandidatos.value = "";
+    cantVotantes.value = "";
+    numCandidato.value = "";
+    numVotante.value = "";
 }

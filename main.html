@@ -3,44 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Votación</title>
+    <link rel="stylesheet" href= "main.css">
 </head>
 <body>
-    <h1>Elecciones presidenciales 2050</h1>
+    <div class="main-cont">
+        <h1>Elecciones presidenciales 2050</h1>
+
+        <div>
+            <form id= "formCandidatos" class="formCand">
+                <p class="pregunta">¿Cuántos candidatos va a haber?</p>
+                <input id="cantCandidatos" name="cantCandidatos" type="number" placeholder=" Cantidad de candidatos">
+                <button class="boton" type="submit" name="generarCandidatos">Generar candidatos</button>
+                <label id="anuncioCandGenerados" for="generarCandidatos"></label>    
+            </form>
+        </div>  
+        
+
+        <div>
+            <form id="formVotantes" class="formVot">
+                <p class="pregunta">¿Cuántos votantes va a haber?</p>
+                <input id="cantVotantes" name="cantVotantes" type="number" placeholder=" Cantidad de votantes">
+                <button class="boton" type="submit" name="generarVotantes">Generar votantes</button>
+                <label id="anuncioVotGenerados" for="generarVotates"> </label>
+            </form>
+   
+        </div>
+
+        <button class="boton" id="votar">Votar</button>
+        <button id="reset">Nueva votación</button>
 
 
-    <form id= "formCandidatos" action="">
-        <label for="cantidadCandidatos">¿Cuántos candidatos va a haber?</label>
-        <input id="cantidadCandidatos" name="cantidadCandidatos" type="number" placeholder="Cantidad de candidatos">
-        <button type="submit" name="generarCandidatos">Generar candidatos</button>
-        <label id="anuncioCandGenerados" for="generarCandidatos"></label>
-        <br><br>
-    </form>
+        <form id="formMostrarCandidato"class="formIndicativo">
+            <input id="numCandidato" type="number" placeholder=" Número de candidato">
+            <button class="boton" type="submit">Mostrar candidato</button>
+        </form>
 
-    <form id="formVotantes" action="">
-        <label for="cantidadVotantes">¿Cuántos votantes va a haber?</label>
-        <input id="cantidadVotantes" name="cantidadVotantes" type="number" placeholder="Cantidad de votantes">
-        <button type="submit" name="generarVotantes">Generar votantes</button>
-        <label id="anuncioVotGenerados" for="generarVotates"> </label>
-    </form>
+        <form id="formMostrarVotante" class="formIndicativo">
+            <input id="numVotante" type="number" placeholder=" Número de votante">
+            <button class="boton" type="submit" >Mostrar votante</button>
+        </form>
 
-    <br>
-    <button id="votar">Votar</button>
-    <button id="reset">Nueva votación</button>
-    <br> <br>
-
-    <form id="formMostrarCandidato"action="">
-        <input id="numeroCandidato" type="number" placeholder="Número de candidato">
-        <button type="submit">Mostrar candidato</button>
-    </form>
-    <br>
-
-    <form id="formMostrarVotante" action="">
-        <input id="numeroVotante" type="number" placeholder="Número de votante">
-        <button type="submit" >Mostrar votante</button>
-    </form>
-    <br>
-    
-    <h3 id="mensajes"></h3>
+        
+        <p id="msg"><p>
+    </div>
 
     <script src="main.js" type="module"></script>
 </body>
