@@ -166,28 +166,7 @@ function inventarSustProp() {
         Math.random() * (MAX_NUMBER - MIN_NUMBER) + MIN_NUMBER
     );
     const vocales = ["a", "e", "i", "o", "u"];
-    const consonantes = [
-        "b",
-        "c",
-        "d",
-        "f",
-        "g",
-        "h",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "p",
-        "r",
-        "s",
-        "t",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z",
-    ];
+    const consonantes = ["b","c","d","f","g","h","j","k","l","m","n","p","r","s","t","v","w","x","y","z",];
     const cantidadVocales = vocales.length;
     const cantidadConsonantes = consonantes.length;
     let sustProp = "";
@@ -283,7 +262,8 @@ function generarPropuesta() {
 
     let socFinal = socValues.toString().split(",").join("");
 
-    let propuestaFinal = ecoFinal + "<br>" + polFinal + "<br>" + socFinal;
+    let propuestaFinal =
+        ecoFinal + "<br><br>" + polFinal + "<br><br>" + socFinal;
     return propuestaFinal;
 }
 
@@ -390,6 +370,7 @@ function mostrarCandidato(_num) {
 
     let candidato = candidatos[_num - 1];
     msg.innerHTML = `Soy ${candidato.nombre} ${candidato.apellido}, el candidato representante del partido ${candidato.ideologia}. <br><br> Nosotros ${candidato.propuestas}`;
+    window.scrollBy(0, 1000);
 }
 
 function votar() {
@@ -447,25 +428,32 @@ function votar() {
     // Desempatar:
     let numDesempatantes = desempatantes.length;
     if (numDesempatantes >= 2) {
-        let anuncioEmpate = ["Hubo un empate. Vamos a desempatar entre: "];
-
+        let anuncioEmpate = "Hubo un empate. Vamos a desempatar entre: ";
         desempatantes.forEach((desempatante) => {
             desempatante.participoEnDesempate = true;
             desempatante.ganoEnDesempate = false;
-            anuncioEmpate.push(
+            anuncioEmpate +=
                 "<br>" +
-                    "- " +
-                    desempatante.nombre +
-                    " " +
-                    desempatante.apellido +
-                    ` (${desempatante.ideologia})`
-            );
+                "- " +
+                desempatante.nombre +
+                " " +
+                desempatante.apellido +
+                ` (${desempatante.ideologia})`;
         });
 
-        anuncioEmpate.toString().split(",").join("") + "Desempatando...";
-
-        mostrarEmpate = setTimeout(() => (msg.innerHTML = anuncioEmpate), 3000);
+        let tiempoAnuncioEmpate = 3000;
+        mostrarEmpate = setTimeout(
+            () => (msg.innerHTML = anuncioEmpate),
+            tiempoAnuncioEmpate
+        );
         msg.innerHTML = mostrarEmpate;
+
+        const bajar = () => {
+            setTimeout(() => {
+                window.scrollBy(0, 1000);
+            }, tiempoAnuncioEmpate);
+        };
+        bajar();
 
         let numGanador = Math.floor(Math.random() * numDesempatantes);
         ganador = desempatantes[numGanador];
@@ -475,30 +463,47 @@ function votar() {
 
     // Si hubo empate que tarde más en aparecer el anuncio de espera del ganador
     let time = empate ? 6000 : 3000;
-
     esperarGanador = setTimeout(
         () => (msg.innerHTML += "<br>" + "Y el ganador es..."),
         time
     );
     msg.innerHTML = esperarGanador;
 
+    const bajar = () => {
+        setTimeout(() => {
+            window.scrollBy(0, 1000);
+        }, time);
+    };
+    bajar();
+
     // Así mismo incrementar el tiempo del anuncio final en función de si se extendió el tiempo anterior o no
     let time2 = empate ? 9000 : 6000;
-
     if (empate) {
         return1 = setTimeout(() => {
             votando = false;
             manejarBotones();
-            return (msg.innerHTML = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido}`);
+            msg.innerHTML = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido}`;
         }, time2);
-        return (msg.innerHTML = return1);
+
+        const bajar = () => {
+            setTimeout(() => {
+                window.scrollBy(0, 1000);
+            }, time2);
+        };
+        bajar();
     } else {
         return2 = setTimeout(() => {
             votando = false;
             manejarBotones();
-            return (msg.innerHTML = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido} con ${ganador.votosAcumulados} votos`);
+            msg.innerHTML = `El ganador es el candidato ${ganador.ideologia} ${ganador.nombre} ${ganador.apellido} con ${ganador.votosAcumulados} votos`;
         }, time2);
-        return (msg.innerHTML = return2);
+
+        const bajar = () => {
+            setTimeout(() => {
+                window.scrollBy(0, 1000);
+            }, time2);
+        };
+        bajar();
     }
 }
 
