@@ -96,7 +96,7 @@ class Voter {
     static generate(_numberOfVoters) {
         if (votersGenerated)
             return (message.innerHTML = "Ya se crearon los votantes");
-        if (_numberOfVoters === undefined || isNaN(parseInt(_numberOfVoters)))
+        if (!_numberOfVoters || isNaN(_numberOfVoters))
             return (message.innerHTML = "Tenés que decirme cuántos votantes querés");
         if (_numberOfVoters <= 0)
             return (message.innerHTML = "Se necesita al menos un votante");
@@ -201,7 +201,7 @@ class Candidate {
     }
 }
 
-// Function to disable and enable buttons while counting votes
+// Function to disable and enable buttons
 // This is to avoid conflicts with asynchronous code
 function changeButtonsState() {
     buttons.forEach((button) => button.toggleAttribute("disabled", voting));
@@ -222,8 +222,8 @@ function vote() {
         return (message.innerHTML = "Se necesitan al menos 2 candidatos para votar");
 
     voting = true;
-    changeButtonsState();
     voteFunctionUsed = true;
+    changeButtonsState();
 
     counting = setTimeout(() => (msg.innerHTML = "Contando votos..."), 0);
 
@@ -231,7 +231,6 @@ function vote() {
     voters.forEach((votante) => {
         const randomIndex = Math.floor(Math.random() * candidates.length);
         candidates[randomIndex].votesReceived += 1;
-        votante.hasVoted = true;
     });
 
     // Search for winner
@@ -247,7 +246,6 @@ function vote() {
     // See if there is a tie
     let tie = false;
     let tiedCandidates = [];
-
     candidates.forEach((candidate) => {
         if (candidate.votesReceived === votesOfTheWinner) {
             tiedCandidates.push(candidate);
@@ -257,11 +255,10 @@ function vote() {
     // Break the tie:
     if (tiedCandidates.length >= 2) {
         let tieAnnouncement = "Hubo un empate. Vamos a desempatar entre: ";
-
+        
         tiedCandidates.forEach((candidate) => {
             tieAnnouncement += `<br> - ${candidate.name} ${candidate.lastName} (${candidate.ideology})`;
         });
-
         let tieAnnouncementTime = 3000;
 
         showDraw = setTimeout(() => {
@@ -283,7 +280,7 @@ function vote() {
 
     // Also increase the final announcement time depending on whether the previous time was extended or not
     let time2 = tie ? 9000 : 6000;
-    console.log(winner);
+
     voteReturn = setTimeout(() => {
         voting = false;
         changeButtonsState();
