@@ -1,34 +1,9 @@
 function inventProperNoun() {
     const MIN_NUM = 3;
     const MAX_NUM = 7;
-    const nameLength = Math.round(
-        Math.random() * (MAX_NUM - MIN_NUM) + MIN_NUM
-    );
+    const nameLength = Math.round(Math.random() * (MAX_NUM - MIN_NUM) + MIN_NUM);
     const vowels = ["a", "e", "i", "o", "u"];
-    const consonants = [
-        "b",
-        "c",
-        "d",
-        "f",
-        "g",
-        "h",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "ñ",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z",
-    ];
+    const consonants = ["b","c","d","f","g","h","j","k","l","m","n","ñ","p","q","r","s","t","v","w","x","y","z"];
     const vowelsLength = vowels.length;
     const consonantsLength = consonants.length;
     let properNoun = "";
@@ -45,7 +20,8 @@ function inventProperNoun() {
         // GRAMMAR RULES FOR Q AND G
         switch (letter) {
             case "q":
-                // If there is space for two more letters after the "q".
+
+                // If there is space for two more letters after the "q"
                 if (i + 2 < nameLength) {
                     const eOrI = ["e", "i"];
                     letter = "qu" + eOrI[Math.round(Math.random())];
@@ -56,15 +32,15 @@ function inventProperNoun() {
                     /* To jump to the corresponding position after adding additional letters in the same iteration.
                         we add 3 letters but we do 2 increments because the missing one is done by the for loop automatically.*/
                     i += 2;
+
                 } else if (i + 2 === nameLength) {
-                    // If there is only one more letter, we look for another consonant.
+                    // If there is only one more letter, we look for another consonant
+
                     while (letter === "q") {
-                        letter =
-                            consonants[
-                                Math.floor(Math.random() * consonantsLength)
-                            ];
+                        letter =  consonants[Math.floor(Math.random() * consonantsLength)];
                     }
                 }
+
                 break;
 
             case "e":
@@ -78,13 +54,15 @@ function inventProperNoun() {
                         i++;
                     }
                 }
+
                 break;
         }
+
         takeVowel = !takeVowel;
         properNoun += letter;
     }
 
-    // Evitar terminaciones raras
+    // Avoid weird endings
     const lastLetter = properNoun[properNoun.length - 1];
     switch (lastLetter) {
         case "ñ":
@@ -113,7 +91,6 @@ function inventProperNoun() {
     return properNoun;
 }
 
-// Creamos dnis de 8 dígitos y establecemos la cantidad máxima posible
 const MAX_DNIS = 100000000;
 let numberOfDniCreated = 0;
 let dniCreated = new Set();
@@ -127,7 +104,7 @@ function generateDNI() {
     let dni;
     let num;
 
-    // CREAR DNIs ÚNICOS E IRREPETIBLES:
+    // CREATE UNIQUE AND UNREPEATABLE DNIS:
     do {
         dni = "";
 
@@ -140,13 +117,12 @@ function generateDNI() {
             dni = dni.substring(1);
         }
 
-        // Añadir puntos cada 3 numeros empezando desde el final
-
+        // Add points every 3 numbers starting from the end
         dni = dni.split("").reverse().join("");
         dni = dni.replace(/(\d{3})(?!$)/g, "$1.");
         dni = dni.split("").reverse().join("");
 
-        // Si este dni ya se obtuvo repetir el proceso
+        // If this DNI has already been obtained, repeat the process
     } while (dniCreated.has(dni));
 
     dniCreated.add(dni);
@@ -158,14 +134,15 @@ function generateProposal(proposals) {
     let finalSentence = "";
     for (let i = 0; i < proposals.length; i++) {
         const typeOfProposal = proposals[i]; // An object
-        const partOfTheProposal = Object.keys(typeOfProposal); // [ "intenciones", "acciones",etc ]
+        const partOfTheProposal = Object.keys(typeOfProposal); // [ "intenciones", "acciones", etc ]
 
         for (let j = 0; j < partOfTheProposal.length; j++) {
-            let partsOfText = typeOfProposal[partOfTheProposal[j]]; // ["queremos", "pensamos","planeamos",etc]
+            let partsOfText = typeOfProposal[partOfTheProposal[j]]; // ["queremos", "pensamos", "planeamos", etc]
             let randomIndex = Math.floor(Math.random() * partsOfText.length);
             let text = partsOfText[randomIndex];
             finalSentence += text;
         }
+
         finalSentence += "</br></br>";
     }
 
