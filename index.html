@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Votación</title>
+        <link rel="stylesheet" href="index.css" />
+    </head>
+    <body>
+        <div class="main-cont">
+            <h1>Elecciones presidenciales</h1>
+
+            <div>
+                <form id="formCandidatos" class="formCand">
+                    <p class="pregunta">¿Cuántos candidatos va a haber?</p>
+                    <input
+                        id="cantCandidatos"
+                        name="cantCandidatos"
+                        type="number"
+                        placeholder=" Cantidad de candidatos"
+                        autocomplete="off" />
+                    <button
+                        class="boton"
+                        type="submit"
+                        name="generarCandidatos">
+                        Generar candidatos
+                    </button>
+                    <label
+                        id="anuncioCandGenerados"
+                        for="generarCandidatos"></label>
+                </form>
+            </div>
+
+            <div>
+                <form id="formVotantes" class="formVot">
+                    <p class="pregunta">¿Cuántos votantes va a haber?</p>
+                    <input
+                        id="cantVotantes"
+                        name="cantVotantes"
+                        type="number"
+                        placeholder=" Cantidad de votantes"
+                        autocomplete="off" />
+                    <button class="boton" type="submit" name="generarVotantes">
+                        Generar votantes
+                    </button>
+                    <label id="anuncioVotGenerados" for="generarVotates">
+                    </label>
+                </form>
+            </div>
+
+            <button class="boton" id="votar">Votar</button>
+            <button id="reset">Nueva votación</button>
+
+            <form id="formMostrarCandidato" class="formIndicativo">
+                <input
+                    id="numCandidato"
+                    type="number"
+                    placeholder=" Número de candidato"
+                    autocomplete="off" />
+                <button class="boton" type="submit">Mostrar candidato</button>
+            </form>
+
+            <form id="formMostrarVotante" class="formIndicativo">
+                <input
+                    id="numVotante"
+                    type="number"
+                    placeholder=" Número de votante"
+                    autocomplete="off" />
+                <button class="boton" type="submit">Mostrar votante</button>
+            </form>
+
+            <p id="msg"></p>
+        </div>
+
+        <script src="app.js" type="module"></script>
+    </body>
+</html>
