@@ -299,8 +299,6 @@ function reset() {
     clearTimeout(showDraw);
     clearTimeout(voteReturn);
     message.innerHTML = "";
-    _numberOfCandidates = undefined;
-    _numberOfVoters = undefined;
     candidatesGenerated = false;
     votersGenerated = false;
     voteFunctionUsed = false;
