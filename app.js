@@ -5,24 +5,24 @@ import {
     generateProposal,
 } from "./functions.js";
 
-// Buttons to create candidates and voters
+// Botones para crear candidatos y votantes
 const numberOfCandidates = document.getElementById("cantCandidatos");
 const numberOfVoters = document.getElementById("cantVotantes");
 
-// Forms for each button
+// Formularios para cada boton
 const formCreateCandidate = document.getElementById("formCandidatos");
 const formCreateVoters = document.getElementById("formVotantes");
 const formShowCandidate = document.getElementById("formMostrarCandidato");
 const formShowVoter = document.getElementById("formMostrarVotante");
 
-// Texts to announce the creation of candidates and voters
+// Textos para anunciar la creación de candidatos y votantes
 const candCreatedAnnouncement = document.getElementById("anuncioCandGenerados");
 const votCreatedAnnouncement = document.getElementById("anuncioVotGenerados");
 
 const btnVote = document.getElementById("votar");
 const btnReset = document.getElementById("reset");
 
-// Input values
+// Valor de los input
 const numberOfCandidate = document.getElementById("numCandidato");
 const numberOfVoter = document.getElementById("numVotante");
 
@@ -95,15 +95,22 @@ class Voter {
 
     static generate(_numberOfVoters) {
         if (votersGenerated)
-            return (message.innerHTML = "Ya se crearon los votantes");
-        if (!_numberOfVoters || isNaN(_numberOfVoters))
-            return (message.innerHTML = "Tenés que decirme cuántos votantes querés");
-        if (_numberOfVoters <= 0)
-            return (message.innerHTML = "Se necesita al menos un votante");
-        if (_numberOfVoters > 10000)
-            return (message.innerHTML = "Máximo 10.000 votantes");
+            return (votCreatedAnnouncement.innerHTML =
+                "Ya se crearon los votantes");
 
-        message.innerHTML = "";
+        if (_numberOfVoters === undefined || isNaN(parseInt(_numberOfVoters)))
+            return (votCreatedAnnouncement.innerHTML =
+                "Tenés que decirme cuántos votantes querés");
+
+        if (_numberOfVoters <= 0)
+            return (votCreatedAnnouncement.innerHTML =
+                "Se necesita al menos un votante");
+
+        if (_numberOfVoters > 10000)
+            return (votCreatedAnnouncement.innerHTML =
+                "Máximo 10.000 votantes");
+
+        votCreatedAnnouncement.innerHTML = "";
 
         let id = 1;
         for (let i = 0; i < _numberOfVoters; i++) {
@@ -123,15 +130,16 @@ class Voter {
         votCreatedAnnouncement.innerHTML = `¡${_numberOfVoters} votantes generados con éxito!`;
     }
 
-    static introduceOneself(_numberOfCandidate) {
-        if (!votersGenerated)
-            return (message.innerHTML = "No hay votantes");
-        if (isNaN(_numberOfCandidate))
+    static introduceOneself(_numberOfVoter) {
+        if (!votersGenerated) return (message.innerHTML = "No hay votantes");
+
+        if (!_numberOfVoter)
             return (message.innerHTML = "Dame un número de votante");
-        if (_numberOfCandidate <= 0 || _numberOfCandidate > voters.length)
+
+        if (_numberOfVoter <= 0 || _numberOfVoter > voters.length)
             return (message.innerHTML = "No existe ese número de votante");
 
-        const voter = voters[_numberOfCandidate - 1];
+        const voter = voters[_numberOfVoter - 1];
         message.innerHTML = `Soy ${voter.name} ${voter.lastName}, mi dni es ${voter.dni} y soy de la ciudad de ${voter.city}.`;
     }
 }
@@ -147,15 +155,22 @@ class Candidate {
 
     static generate(_numberOfCandidates) {
         if (candidatesGenerated)
-            return (message.innerHTML = "Ya se crearon los candidatos");
-        if (!_numberOfCandidates || isNaN(_numberOfCandidates))
-            return (message.innerHTML = "Tenés que decirme cuántos candidatos querés");
-        if (_numberOfCandidates < 2)
-            return (message.innerHTML = "Se necesitan al menos 2 candidatos");
-        if (_numberOfCandidates > ideologiesLength)
-            return (message.innerHTML = "No hay tantas ideologías por las que votar");
+            return (candCreatedAnnouncement.innerHTML =
+                "Ya se crearon los candidatos");
 
-        message.innerHTML = "";
+        if (!_numberOfCandidates || isNaN(_numberOfCandidates))
+            return (candCreatedAnnouncement.innerHTML =
+                "Tenés que decirme cuántos candidatos querés");
+
+        if (_numberOfCandidates < 2)
+            return (candCreatedAnnouncement.innerHTML =
+                "Se necesitan al menos 2 candidatos");
+
+        if (_numberOfCandidates > ideologiesLength)
+            return (candCreatedAnnouncement.innerHTML =
+                "Sólo hay 10 ideologías por las que votar");
+
+        candCreatedAnnouncement.innerHTML = "";
 
         // Generate candidates with random ideologies
         let randomIndex;
@@ -163,7 +178,7 @@ class Candidate {
         let randomIdeology;
         let generatedCandidate;
 
-        // We look for an ideology for each candidate without repeating
+        // We look for an ideology for each candidate without repeating them
         for (let i = 0; i < _numberOfCandidates; i++) {
             do {
                 randomIndex = Math.floor(Math.random() * ideologiesLength);
@@ -190,40 +205,50 @@ class Candidate {
     static introduceOneself(_numberOfCandidate) {
         if (!candidatesGenerated)
             return (message.innerHTML = "No hay candidatos");
+
         if (isNaN(_numberOfCandidate))
             return (message.innerHTML = "Dame un número de candidato");
+
         if (_numberOfCandidate <= 0 || _numberOfCandidate > candidates.length)
             return (message.innerHTML = "No existe ese número de candidato");
-        
+
         const candidate = candidates[_numberOfCandidate - 1];
+
         message.innerHTML = `Soy ${candidate.name} ${candidate.lastName}, el candidato representante del partido ${candidate.ideology}. <br><br> Nosotros ${candidate.proposals}`;
+
         window.scrollBy(0, 1000);
     }
 }
 
-// Function to disable and enable buttons
+// Function to disable and enable buttons while counting votes
 // This is to avoid conflicts with asynchronous code
 function changeButtonsState() {
     buttons.forEach((button) => button.toggleAttribute("disabled", voting));
 }
 
 function vote() {
-    if (voteFunctionUsed) 
+    if (voteFunctionUsed)
         return (message.innerHTML = "Ya se votó. Inicia una nueva votación.");
+
     if (!candidatesGenerated && !votersGenerated)
         return (message.innerHTML = "No hay ni candidatos ni votantes");
-    if (!candidatesGenerated)
-        return (message.innerHTML = "No hay candidatos");
-    if (!votersGenerated)
-        return (message.innerHTML = "No hay votantes");
+
+    if (!candidatesGenerated) return (message.innerHTML = "No hay candidatos");
+
+    if (!votersGenerated) return (message.innerHTML = "No hay votantes");
+
     if (voters.length < 0)
-        return (message.innerHTML = "Se necesita al menos un votante para votar");
+        return (message.innerHTML =
+            "Se necesita al menos un votante para votar");
+
     if (candidates.length < 2)
-        return (message.innerHTML = "Se necesitan al menos 2 candidatos para votar");
+        return (message.innerHTML =
+            "Se necesitan al menos 2 candidatos para votar");
 
     voting = true;
-    voteFunctionUsed = true;
     changeButtonsState();
+
+    voteFunctionUsed = true;
 
     counting = setTimeout(() => (msg.innerHTML = "Contando votos..."), 0);
 
@@ -236,6 +261,7 @@ function vote() {
     // Search for winner
     let winner;
     let votesOfTheWinner = 0;
+
     candidates.forEach((candidate) => {
         if (candidate.votesReceived > votesOfTheWinner) {
             votesOfTheWinner = candidate.votesReceived;
@@ -246,6 +272,7 @@ function vote() {
     // See if there is a tie
     let tie = false;
     let tiedCandidates = [];
+
     candidates.forEach((candidate) => {
         if (candidate.votesReceived === votesOfTheWinner) {
             tiedCandidates.push(candidate);
@@ -255,10 +282,11 @@ function vote() {
     // Break the tie:
     if (tiedCandidates.length >= 2) {
         let tieAnnouncement = "Hubo un empate. Vamos a desempatar entre: ";
-        
+
         tiedCandidates.forEach((candidate) => {
             tieAnnouncement += `<br> - ${candidate.name} ${candidate.lastName} (${candidate.ideology})`;
         });
+
         let tieAnnouncementTime = 3000;
 
         showDraw = setTimeout(() => {
@@ -273,6 +301,7 @@ function vote() {
 
     // If there was a tie, it will take longer for the announcement of the winner to appear
     let time = tie ? 6000 : 3000;
+
     expectWinner = setTimeout(
         () => (message.innerHTML += "<br>" + "Y el ganador es..."),
         time
@@ -280,7 +309,7 @@ function vote() {
 
     // Also increase the final announcement time depending on whether the previous time was extended or not
     let time2 = tie ? 9000 : 6000;
-
+    console.log(winner);
     voteReturn = setTimeout(() => {
         voting = false;
         changeButtonsState();
