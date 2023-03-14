@@ -7,7 +7,7 @@ This project is an Election Simulator that generates candidates and voters, assi
 1. Clone the repository:
 
 ~~~
-git clone https://github.com/eliasismael/votacion
+git clone https://github.com/eliasismael/election-simulator
 ~~~
 
 2. Open the index.html file in your browser.
